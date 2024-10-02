@@ -18,13 +18,38 @@ class FadingTextAnimation extends StatefulWidget {
   _FadingTextAnimationState createState() => _FadingTextAnimationState();
 }
 
-class _FadingTextAnimationState extends State<FadingTextAnimation> {
+class _FadingTextAnimationState extends State<FadingTextAnimation> with SingleTickerProviderStateMixin{
   bool _isVisible = true;
+  late AnimationController controller;
+  late Animation colorAnimation;
+  late Animation sizeAnimation;
+  
 
   void toggleVisibility() {
     setState(() {
       _isVisible = !_isVisible;
+    //   // controller=AnimationController(vsync: this, duration: Duration(seconds: 1));
+    //   // super.initState();
+    // controller=AnimationController(vsync: this, duration: Duration(seconds: 2));
+    // colorAnimation=ColorTween(begin: Colors.green, end: Colors.red).animate(controller);
+    // sizeAnimation=Tween<double>(begin: 100, end: 200).animate(controller);
+    // controller.addListener(() {
+    //   setState(() {});
+    // },);
+    // controller.repeat();
     });
+  }
+
+  @override
+  void initState() {
+    // super.initState();
+    controller=AnimationController(vsync: this, duration: Duration(seconds: 2));
+    colorAnimation=ColorTween(begin: Colors.green, end: Colors.red).animate(controller);
+    sizeAnimation=Tween<double>(begin: 100, end: 200).animate(controller);
+    controller.addListener(() {
+      setState(() {});
+    },);
+    controller.repeat();
   }
 
   @override
@@ -34,7 +59,20 @@ class _FadingTextAnimationState extends State<FadingTextAnimation> {
         title: Text('Fading Text Animation'),
       ),
       body: Center(
-        child: GestureDetector(
+        // child: Container(
+
+        // ),
+        child: Column(
+          children: [
+            Container(
+              height: sizeAnimation.value,
+              width: sizeAnimation.value,
+              color: colorAnimation.value,
+              // onTap
+            ),
+            // GestureDetector(onTap: initState(),
+            // child: ColorTween(begin: Colors.green, end: Colors.red).animate(controller),),
+          GestureDetector(
           onTap: toggleVisibility,
           child: AnimatedOpacity(
             opacity: _isVisible ? 1.0 : 0.0,
@@ -47,7 +85,8 @@ class _FadingTextAnimationState extends State<FadingTextAnimation> {
             curve: Curves.easeInOut
             
           ),
-        )
+        )]
+      ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: toggleVisibility,
