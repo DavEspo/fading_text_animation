@@ -50,6 +50,9 @@ class _FadingTextAnimationState extends State<FadingTextAnimation> with TickerPr
       body: Center(
         child: Column(
           children: [
+            SizedBox(
+              height: 50
+            ),
             GestureDetector(
               onTap: () {
                 toggleVisibility;
@@ -65,6 +68,16 @@ class _FadingTextAnimationState extends State<FadingTextAnimation> with TickerPr
                   color: _isVisible == true ? Colors.blue: Colors.white,
                 ),
               )
+            ),
+            GestureDetector(
+              onTap: () {
+                toggleVisibility;
+              },
+              child: AnimatedContainer(
+                curve: _isVisible == true ? Curves.easeInCirc:Curves.easeOutSine,
+                height: _isVisible == true ? 50:350,
+                duration: Duration(seconds: 1),
+              ),
             ),
             GestureDetector(
               onTap: toggleVisibility,
