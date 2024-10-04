@@ -18,75 +18,68 @@ class FadingTextAnimation extends StatefulWidget {
   _FadingTextAnimationState createState() => _FadingTextAnimationState();
 }
 
-class _FadingTextAnimationState extends State<FadingTextAnimation> with SingleTickerProviderStateMixin{
+class _FadingTextAnimationState extends State<FadingTextAnimation> with TickerProviderStateMixin{
   bool _isVisible = true;
-  late AnimationController controller;
-  late Animation colorAnimation;
-  late Animation sizeAnimation;
+  late AnimationController _animationController;
   
+  void initState() {
+    _animationController = AnimationController(
+      vsync: this,
+      duration: Duration(seconds: 1)
+    );
+  }
 
   void toggleVisibility() {
     setState(() {
       _isVisible = !_isVisible;
-    //   // controller=AnimationController(vsync: this, duration: Duration(seconds: 1));
-    //   // super.initState();
-    // controller=AnimationController(vsync: this, duration: Duration(seconds: 2));
-    // colorAnimation=ColorTween(begin: Colors.green, end: Colors.red).animate(controller);
-    // sizeAnimation=Tween<double>(begin: 100, end: 200).animate(controller);
-    // controller.addListener(() {
-    //   setState(() {});
-    // },);
-    // controller.repeat();
     });
-  }
-
-  @override
-  void initState() {
-    // super.initState();
-    controller=AnimationController(vsync: this, duration: Duration(seconds: 2));
-    colorAnimation=ColorTween(begin: Colors.green, end: Colors.red).animate(controller);
-    sizeAnimation=Tween<double>(begin: 100, end: 200).animate(controller);
-    controller.addListener(() {
-      setState(() {});
-    },);
-    controller.repeat();
+    _animationController = AnimationController(
+      vsync: this,
+      duration: Duration(seconds: 1)
+    );
+    _animationController.forward();
+    
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Fading Text Animation'),
+        title: const Text('Fading Text Animation'),
       ),
       body: Center(
-        // child: Container(
-
-        // ),
         child: Column(
           children: [
-            Container(
-              height: sizeAnimation.value,
-              width: sizeAnimation.value,
-              color: colorAnimation.value,
-              // onTap
+            GestureDetector(
+              onTap: () {
+                toggleVisibility;
+              },
+              child: RotationTransition(
+                turns: _animationController,
+                alignment: Alignment.center,
+                child: AnimatedContainer(
+                  curve: _isVisible == true ? Curves.easeInCirc:Curves.easeOutSine,
+                  duration: Duration(seconds: 1),
+                  height: _isVisible == true ? 300:0,
+                  width: _isVisible == true ? 300:0,
+                  color: _isVisible == true ? Colors.blue: Colors.white,
+                ),
+              )
             ),
-            // GestureDetector(onTap: initState(),
-            // child: ColorTween(begin: Colors.green, end: Colors.red).animate(controller),),
-          GestureDetector(
-          onTap: toggleVisibility,
-          child: AnimatedOpacity(
-            opacity: _isVisible ? 1.0 : 0.0,
-            duration: Duration(seconds: 1),
-            child: const Text(
-              'Hello, Flutter!',
-              style: TextStyle(fontSize: 24),
-              
+            GestureDetector(
+              onTap: toggleVisibility,
+              child: AnimatedOpacity(
+                opacity: _isVisible ? 1.0 : 0.0,
+                duration: const Duration(seconds: 1),
+                curve: Curves.easeInOut,
+                child: const Text(
+                  'Hello, Flutter!',
+                  style: TextStyle(fontSize: 24),
+                )
+              ),
             ),
-            curve: Curves.easeInOut
-            
-          ),
-        )]
-      ),
+          ]
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: toggleVisibility,
